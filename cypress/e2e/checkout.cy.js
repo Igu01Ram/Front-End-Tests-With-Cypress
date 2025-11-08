@@ -1,0 +1,58 @@
+describe('Testes de automação com front end no site SauceDemo na rota de checkout', () =>{
+
+    it('Preencher dados válidos > Avança para página de revisão', () =>{
+        cy.get('#user-name').type('standard_user')
+        cy.get('#password').type('secret_sauce')
+        cy.get('#login-button').click()
+        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
+        cy.get('.shopping_cart_link').click()
+        cy.get('[data-test="checkout"]').click()
+        cy.get('#first-name').type('Igor')
+        cy.get('#last-name').type('Silva')
+        cy.get('#postal-code').type('12345')
+        cy.get('[data-test="continue"]').click()
+        cy.url().should('include', '/checkout-step-two.html')
+    })
+
+    it('Campos vazios no checkout > Exibir aviso de preenchimento obrigatório', () =>{
+        cy.get('#user-name').type('standard_user')
+        cy.get('#password').type('secret_sauce')
+        cy.get('#login-button').click()
+        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
+        cy.get('.shopping_cart_link').click()
+        cy.get('[data-test="checkout"]').click()
+        cy.get('[data-test="continue"]').click()
+        cy.get('[data-test="error"]').should('be.visible').and('contain', 'Error: First Name is required')
+    })
+
+    it('Finalizar compra > Exibir mensagem “Thank you for your order!”', () =>{
+        cy.get('#user-name').type('standard_user')
+        cy.get('#password').type('secret_sauce')
+        cy.get('#login-button').click()
+        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
+        cy.get('.shopping_cart_link').click()
+        cy.get('[data-test="checkout"]').click()
+        cy.get('#first-name').type('Igor')
+        cy.get('#last-name').type('Silva')
+        cy.get('#postal-code').type('12345')
+        cy.get('[data-test="continue"]').click()
+        cy.get('[data-test="finish"]').click()
+        cy.get('.complete-header').should('be.visible').and('contain', 'Thank you for your order!')
+    })
+
+    it('Cancelar checkout > Retorna para lista de produtos', () =>{
+        cy.get('#user-name').type('standard_user')
+        cy.get('#password').type('secret_sauce')
+        cy.get('#login-button').click()
+        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
+        cy.get('.shopping_cart_link').click()
+        cy.get('[data-test="checkout"]').click()
+        cy.get('#first-name').type('Igor')
+        cy.get('#last-name').type('Silva')
+        cy.get('#postal-code').type('12345')
+        cy.get('[data-test="continue"]').click()
+        cy.get('[data-test="cancel"]').click()
+        cy.url().should('include', '/inventory.html')
+    })
+
+})
